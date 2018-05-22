@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MartialMayhem</string>
+    <string name="startButton">Start Game</string>
+    <string name="instructions">Instructions</string>
+    <string name="instructionsTitle">How to play martial mayhem</string>
+    <string name="instructionsText">Your character is always in the center of the screen. For now, your only threat are incoming ninja stars.
+    Knock them out of the air by attacking them. To attack, tap the screen in the direction you wish to attack. There are only 4 directions,
+        which are left, right, top left, and top right. The ninja stars need to be close enough for you to hit them.</string>
+</resources>
