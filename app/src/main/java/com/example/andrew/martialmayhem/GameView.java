@@ -9,7 +9,7 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
+import java.util.*;
 import java.util.Random;
 
 
@@ -34,6 +34,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int spawnCounter = 0;
     private Random rand;
     private int enemyCounter = 0;
+    private LinkedList<Enemy> enemyList= new LinkedList<>();
 
     //set between any negative number to 119 to decrease -> increase spawn rate. Lower==easier
     private int difficulty = 60;
@@ -58,11 +59,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         rand = new Random();
 
         // int  n = rand.nextInt(400) -200;
-        for (int i = 0; i < 10; i++) {
+        /*for (int i = 0; i < 10; i++) {
             enemy[i] = new Enemy(BitmapFactory.decodeResource(getResources(), R.drawable.ninjastar), i, width, height, this);
             //n = rand.nextInt(400) -200;
 
-        }
+        }*/
 
     }
 
@@ -100,8 +101,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 lastTouch = NUETRAL;
             }
         }
+        if(spawnCounter<0){
+            spawnCounter=30;
+            Enemy temp = new Shuriken(BitmapFactory.decodeResource(getResources(), R.drawable.ninjastar), 0, width, height, this);
+            enemyList.addLast(temp);
+            enemyList.get(enemyList.size()-1).changeState((rand.nextInt(4) + 1));
+        }
+        --spawnCounter;
         //controls enemy spawn rate, somewhat randomizes when enemies spawn
-        if (spawnCounter <= 0) {
+       /* if (spawnCounter <= 0) {
             spawnCounter = rand.nextInt(120 - difficulty) + 60;
             if (enemy[enemyCounter].getState() == 0) {
                 enemy[enemyCounter].changeState((rand.nextInt(4) + 1));
@@ -112,6 +120,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
         --spawnCounter;
+        */
     }
 
     @Override
@@ -138,6 +147,25 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 player.setPosition(0);
             }
             player.drawSelf(canvas);
+            if (gameTimer == GAMETIMERCONST-2){
+                for(int i=0; i<enemyList.size(); i++){
+                    enemyList.get(i).drawSelf(canvas, lastTouch);
+                    if(enemyList.get(i).getState()==0){
+                        enemyList.remove(i);
+                        --i;
+                    }
+                }
+            }
+            else {
+                for (int i = 0; i < enemyList.size(); i++) {
+                    enemyList.get(i).drawSelf(canvas, 0);
+                    if (enemyList.get(i).getState() == 0) {
+                        enemyList.remove(i);
+                        --i;
+                    }
+                }
+            }
+            /*
             if (gameTimer == 29) {
                 for (int i = 0; i < 10; i++) {
                     enemy[i].drawSelf(canvas, lastTouch);
@@ -147,6 +175,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     enemy[i].drawSelf(canvas, 0);
                 }
             }
+            */
         }
     }
 

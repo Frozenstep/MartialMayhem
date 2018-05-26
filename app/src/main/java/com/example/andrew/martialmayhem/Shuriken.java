@@ -1,14 +1,11 @@
 package com.example.andrew.martialmayhem;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 
-public class Enemy {
-    //TODO: Make everything protected, make Enemy an abstract class so it's easy to make multiple enemy types that inherit from it.
+public class Shuriken extends Enemy {
     private int x, y, id, rotation=0, speed=4;
     private Matrix rotateMatrix;
     private Bitmap star;
@@ -23,10 +20,7 @@ public class Enemy {
     //size of the screen
     private int width, height;
     private GameView view;
-    Enemy(){
-
-    }
-    Enemy(Bitmap input, int id, int width, int height, GameView View){
+    Shuriken(Bitmap input, int id, int width, int height, GameView View){
         this.id=id;
         star=input;
         this.width=width;
@@ -39,7 +33,6 @@ public class Enemy {
         this.view=View;
         paint = new Paint();
     }
-    //called every time GameView.draw is called. Requires the canvas, and an int that represents what the player has done in the current frame
     public void drawSelf(Canvas canvas, int playerAction){
 
         if(STATE!=DEAD) {
@@ -100,7 +93,6 @@ public class Enemy {
         }
 
     }
-    //used to tell the Enemy that its state has changed, and to reposition itself based on what state it is in
     public void changeState(int newState){
         this.STATE=newState;
         if(newState==LEFTALIVE){
