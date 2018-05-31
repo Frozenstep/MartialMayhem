@@ -7,26 +7,25 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 
-public class Enemy {
-    //TODO: Make everything protected, make Enemy an abstract class so it's easy to make multiple enemy types that inherit from it.
-    private int x, y, id, rotation=0, speed=4;
-    private Matrix rotateMatrix;
-    private Bitmap star;
-    private Bitmap rotatedStar;
-    private final int PLAYERTOPRIGHT=1;
-    private final int PLAYERBOTTOMRIGHT=2;
-    private final int PLAYERBOTTOMLEFT=3;
-    private final int PLAYERTOPLEFT=4;
-    private final int DEAD=0, LEFTALIVE=1, RIGHTALIVE=2, UPPERLEFT=3, UPPERRIGHT=4, DYING=5;
-    private Paint paint;
-    private int STATE;
-    //size of the screen
-    private int width, height;
-    private GameView view;
-    Enemy(){
+abstract public class Enemy {
 
+    protected int x, y, speed=4;
+    protected Matrix rotateMatrix;
+    //private Bitmap star;
+    //private Bitmap rotatedStar;
+    protected final int PLAYERTOPRIGHT=1, PLAYERBOTTOMRIGHT=2, PLAYERBOTTOMLEFT=3, PLAYERTOPLEFT=4;
+    protected final int INACTIVE=0, LEFT=1, RIGHT=2, UPPERLEFT=3, UPPERRIGHT=4, LEFTDYING=5, RIGHTDYING=6, UPPERLEFTDYING=7, UPPERRIGHTDYING=8;
+    protected Paint paint;
+    protected int STATE;
+    //size of the screen
+    protected int width, height;
+    //protected GameView view;
+    Enemy(){
+        STATE=0;
+        paint = new Paint();
     }
     Enemy(Bitmap input, int id, int width, int height, GameView View){
+        /*
         this.id=id;
         star=input;
         this.width=width;
@@ -38,10 +37,11 @@ public class Enemy {
         STATE=0;
         this.view=View;
         paint = new Paint();
+        */
     }
     //called every time GameView.draw is called. Requires the canvas, and an int that represents what the player has done in the current frame
     public void drawSelf(Canvas canvas, int playerAction){
-
+/*
         if(STATE!=DEAD) {
             //first a quick check to see the player attacked, and if so, check if this enemy is within range. If we are, we go into the dying state.
             if(playerAction==PLAYERBOTTOMRIGHT && x<width/2+220 && x > width/2+20 && STATE==RIGHTALIVE){
@@ -98,11 +98,12 @@ public class Enemy {
             }
 
         }
-
+*/
     }
     //used to tell the Enemy that its state has changed, and to reposition itself based on what state it is in
     public void changeState(int newState){
         this.STATE=newState;
+      /*  this.STATE=newState;
         if(newState==LEFTALIVE){
             this.x=0;
             this.y=height-300;
@@ -125,8 +126,16 @@ public class Enemy {
             this.y=0;
             paint.setAlpha(255);
         }
+        */
     }
     public int getState(){
         return this.STATE;
     }
+    public void spawn(){
+
+    }
+    public String getType(){
+        return "Enemy";
+    }
+
 }

@@ -30,7 +30,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private final int GAMETIMERCONST = 30;
     private int lastTouch = 0;
     private Player player;
-    private Enemy[] enemy;
+    //private Enemy[] enemy;
     private int spawnCounter = 0;
     private Random rand;
     private int enemyCounter = 0;
@@ -55,7 +55,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         red.setColor(Color.rgb(250, 0, 0));
         player = new Player(this.getContext(), width, height);
         //Context context = this.getContext();
-        enemy = new Enemy[10];
+        //enemy = new Enemy[10];
         rand = new Random();
 
         // int  n = rand.nextInt(400) -200;
@@ -64,7 +64,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             //n = rand.nextInt(400) -200;
 
         }*/
-
+        Enemy temp = new Ninja(getContext(), width, height, this);
+        enemyList.addLast(temp);
+        enemyList.getLast().spawn();
+        //enemyList.get(enemyList.size()-1).changeState((rand.nextInt(4) + 1));
     }
 
     @Override
@@ -103,9 +106,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
         if(spawnCounter<0){
             spawnCounter=30;
-            Enemy temp = new Shuriken(BitmapFactory.decodeResource(getResources(), R.drawable.ninjastar), 0, width, height, this);
-            enemyList.addLast(temp);
-            enemyList.get(enemyList.size()-1).changeState((rand.nextInt(4) + 1));
+            Enemy temp;
+            if(rand.nextInt(2)==0) {
+                 temp = new Shuriken(BitmapFactory.decodeResource(getResources(), R.drawable.ninjastar), width, height, this);
+            }
+            else{
+                 temp = new Ninja(getContext(), width, height, this);
+            }
+            enemyList.addFirst(temp);
+            enemyList.get(0).spawn();
         }
         --spawnCounter;
         //controls enemy spawn rate, somewhat randomizes when enemies spawn
@@ -147,24 +156,35 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 player.setPosition(0);
             }
             player.drawSelf(canvas);
+
+
+
             if (gameTimer == GAMETIMERCONST-2){
                 for(int i=0; i<enemyList.size(); i++){
+                    //String temp = enemyList.get(i).getType();
+                    //System.out.print(temp);
                     enemyList.get(i).drawSelf(canvas, lastTouch);
                     if(enemyList.get(i).getState()==0){
                         enemyList.remove(i);
                         --i;
                     }
+
                 }
             }
             else {
                 for (int i = 0; i < enemyList.size(); i++) {
+                    //String temp = enemyList.get(i).getType();
+                    //System.out.print(temp);
                     enemyList.get(i).drawSelf(canvas, 0);
+
                     if (enemyList.get(i).getState() == 0) {
                         enemyList.remove(i);
                         --i;
                     }
+
                 }
             }
+
             /*
             if (gameTimer == 29) {
                 for (int i = 0; i < 10; i++) {

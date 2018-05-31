@@ -5,23 +5,15 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 
+import java.util.Random;
+
 public class Shuriken extends Enemy {
-    private int x, y, id, rotation=0, speed=4;
-    private Matrix rotateMatrix;
+    private int rotation=0;
     private Bitmap star;
     private Bitmap rotatedStar;
-    private final int PLAYERTOPRIGHT=1;
-    private final int PLAYERBOTTOMRIGHT=2;
-    private final int PLAYERBOTTOMLEFT=3;
-    private final int PLAYERTOPLEFT=4;
-    private final int DEAD=0, LEFTALIVE=1, RIGHTALIVE=2, UPPERLEFT=3, UPPERRIGHT=4, DYING=5;
-    private Paint paint;
-    private int STATE;
     //size of the screen
-    private int width, height;
     private GameView view;
-    Shuriken(Bitmap input, int id, int width, int height, GameView View){
-        this.id=id;
+    Shuriken(Bitmap input, int width, int height, GameView View){
         star=input;
         this.width=width;
         this.height=height;
@@ -35,19 +27,19 @@ public class Shuriken extends Enemy {
     }
     public void drawSelf(Canvas canvas, int playerAction){
 
-        if(STATE!=DEAD) {
+        if(STATE!=INACTIVE) {
             //first a quick check to see the player attacked, and if so, check if this enemy is within range. If we are, we go into the dying state.
-            if(playerAction==PLAYERBOTTOMRIGHT && x<width/2+220 && x > width/2+20 && STATE==RIGHTALIVE){
-                changeState(DYING);
+            if(playerAction==PLAYERBOTTOMRIGHT && x<width/2+220 && x > width/2+20 && STATE==RIGHT){
+                changeState(LEFTDYING);
             }
-            else if(playerAction==PLAYERBOTTOMLEFT && x<width/2-140 && x > width/2-340 && STATE==LEFTALIVE){
-                changeState(DYING);
+            else if(playerAction==PLAYERBOTTOMLEFT && x<width/2-140 && x > width/2-340 && STATE==LEFT){
+                changeState(LEFTDYING);
             }
             else if(playerAction==PLAYERTOPLEFT && x<width/2-140 && x > width/2-340 && STATE==UPPERLEFT){
-                changeState(DYING);
+                changeState(LEFTDYING);
             }
             else if(playerAction==PLAYERTOPRIGHT && x<width/2+220 && x > width/2+20 && STATE==UPPERRIGHT){
-                changeState(DYING);
+                changeState(LEFTDYING);
             }
             //this isn't complete, but since the only enemy right now is a shuriken, we always gotta spin.
             if (rotation < 10) {
@@ -61,10 +53,10 @@ public class Shuriken extends Enemy {
                 rotation = 0;
             }
             //quick series of checks to keep the enemy moving towards the player, or finish it's dying animation.
-            if (STATE==LEFTALIVE){
+            if (STATE==LEFT){
                 x+=(speed+1);
             }
-            else if (STATE==RIGHTALIVE){
+            else if (STATE==RIGHT){
                 x-=(speed+1);
             }
             else if (STATE==UPPERRIGHT){
@@ -75,17 +67,17 @@ public class Shuriken extends Enemy {
                 x+=speed;
                 y+=speed;
             }
-            else if(STATE==DYING){
+            else if(STATE==LEFTDYING){
                 y-=2;
                 x+=2;
                 paint.setAlpha(paint.getAlpha()-10);
                 if(paint.getAlpha()<10){
-                    changeState(DEAD);
+                    changeState(INACTIVE);
                 }
             }
             //if enemy isn't dying and manges to touch the player, hurt them and vanish.
-            if (x<width/2+20 && x > width/2-140 && STATE!= DYING && STATE != DEAD){
-                changeState(DEAD);
+            if (x<width/2+20 && x > width/2-140 && STATE!= LEFTDYING && STATE != INACTIVE){
+                changeState(INACTIVE);
                 view.hit();
                 view.getPlayer().hurt();
             }
@@ -93,32 +85,32 @@ public class Shuriken extends Enemy {
         }
 
     }
-    public void changeState(int newState){
-        this.STATE=newState;
-        if(newState==LEFTALIVE){
+    public void spawn(){
+        Random rand = new Random();
+        STATE = (rand.nextInt(4) + 1);
+        if(STATE==LEFT){
             this.x=0;
             this.y=height-300;
 
-            paint.setAlpha(255);
         }
-        else if(newState==RIGHTALIVE){
+        else if(STATE==RIGHT){
             this.x=width;
             this.y=height-300;
 
-            paint.setAlpha(255);
         }
-        else if(newState==UPPERRIGHT){
+        else if(STATE==UPPERRIGHT){
             this.x=width-300;
             this.y=0;
-            paint.setAlpha(255);
         }
-        else if(newState==UPPERLEFT){
+        else if(STATE==UPPERLEFT){
             this.x=200;
             this.y=0;
-            paint.setAlpha(255);
         }
     }
     public int getState(){
         return this.STATE;
+    }
+    public String getType(){
+        return "Shuriken";
     }
 }
